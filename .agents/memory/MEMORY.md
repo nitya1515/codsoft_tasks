@@ -1,0 +1,1 @@
+- [GitHub connector sync](github-sync.md) — keep blob uploads below the connector rate limit and initialize empty repositories before Git database writes.

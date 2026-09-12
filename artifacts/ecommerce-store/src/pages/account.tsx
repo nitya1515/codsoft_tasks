@@ -1,0 +1,23 @@
+import { ArrowRight, LogOut, Package, UserRound } from 'lucide-react';
+import { Link } from 'wouter';
+import { useAuth, useClerk } from '@clerk/react';
+import { useEffect } from 'react';
+import { getGetCartQueryKey, getGetCurrentUserQueryKey, useGetCart, useGetCurrentUser } from '@workspace/api-client-react';
+
+export function Account() {
+  const { signOut } = useClerk();
+  const { isLoaded, isSignedIn } = useAuth();
+  useEffect(() => {
+    const button = document.querySelector('[data-testid="button-sign-out"]');
+    const handleSignOut = () => { void signOut({ redirectUrl: '/' }); };
+    button?.addEventListener('click', handleSignOut);
+    return () => button?.removeEventListener('click', handleSignOut);
+  }, [signOut]);
+  const user = useGetCurrentUser({ query: { enabled: isLoaded && isSignedIn === true, queryKey: getGetCurrentUserQueryKey() } });
+  const cart = useGetCart({ query: { enabled: isLoaded && isSignedIn === true, queryKey: getGetCartQueryKey() } });
+  if (user.isLoading) return <div className="mx-auto max-w-[1000px] px-5 py-16 lg:px-8"><div className="skeleton h-16 w-72" /><div className="mt-10 grid gap-4 md:grid-cols-3">{[1,2,3].map((i) => <div className="skeleton h-36" key={i} />)}</div></div>;
+  if (user.isError || !user.data) return <section className="mx-auto max-w-[1000px] px-5 py-20 lg:px-8"><div className="grid items-center gap-12 md:grid-cols-[.8fr_1.2fr]"><div><div className="mono-font text-[10px] uppercase tracking-[.2em] text-accent">Your northstar</div><h1 className="display-font mt-4 text-7xl leading-[.83]">A place<br /><em>to keep.</em></h1></div><div className="border border-foreground/15 bg-card p-8 md:p-12"><UserRound size={28} strokeWidth={1.2} className="text-accent" /><h2 className="display-font mt-7 text-4xl">Your account is waiting.</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">Sign in to keep your cart, revisit your order details, and pick up where you left off.</p><Link href="/sign-in" className="mt-8 inline-flex items-center gap-3 bg-primary px-5 py-3 text-xs font-bold uppercase tracking-[.14em] text-primary-foreground" data-testid="link-account-sign-in">Sign in <ArrowRight size={15} /></Link><Link href="/sign-up" className="ml-5 text-xs font-bold uppercase tracking-[.14em] underline underline-offset-8" data-testid="link-account-sign-up">Create account</Link></div></div></section>;
+  const profile = user.data;
+  const name = [profile.firstName, profile.lastName].filter(Boolean).join(' ') || 'Northstar member';
+  return <section className="mx-auto max-w-[1000px] px-5 py-12 lg:px-8 lg:py-20"><div className="flex flex-col justify-between gap-8 border-b border-foreground/15 pb-8 sm:flex-row sm:items-end"><div><div className="mono-font text-[10px] uppercase tracking-[.2em] text-accent">Your northstar</div><h1 className="display-font mt-4 text-6xl leading-[.85] md:text-8xl">Hello,<br /><em>{name.split(' ')[0]}.</em></h1></div><button type="button" className="inline-flex items-center gap-2 self-start text-xs font-bold uppercase tracking-[.14em] text-muted-foreground hover:text-foreground sm:self-auto" data-testid="button-sign-out"><LogOut size={15} /> Sign out</button></div><div className="mt-10 grid gap-4 md:grid-cols-3"><div className="bg-primary p-6 text-primary-foreground"><Package size={21} strokeWidth={1.2} className="text-secondary" /><div className="mt-10 mono-font text-[10px] uppercase tracking-[.2em] text-primary-foreground/50">Saved cart</div><div className="mt-2 text-3xl font-semibold">{cart.data?.itemCount ?? 0} <span className="text-sm font-normal text-primary-foreground/60">objects</span></div><Link href="/cart" className="mt-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.12em] text-secondary" data-testid="link-account-cart">View cart <ArrowRight size={14} /></Link></div><div className="border border-foreground/15 p-6"><div className="mono-font text-[10px] uppercase tracking-[.2em] text-muted-foreground">Email</div><p className="mt-4 break-words text-sm" data-testid="text-account-email">{profile.email}</p><div className="mt-8 h-px bg-foreground/10" /><p className="mt-4 text-xs text-muted-foreground">Your details are managed securely through Clerk.</p></div><div className="border border-foreground/15 p-6"><div className="mono-font text-[10px] uppercase tracking-[.2em] text-muted-foreground">Membership</div><p className="mt-4 text-sm">Quietly considered</p><p className="mt-2 text-xs leading-5 text-muted-foreground">Early access to new field notes and the next edit.</p></div></div></section>;
+}
