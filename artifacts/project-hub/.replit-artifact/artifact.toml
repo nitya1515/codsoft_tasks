@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/project-hub/"
+title = "Project Hub"
+description = "A focused project management workspace where teams create projects, assign tasks, set deadlines, and track progress from a clear shared dashboard."
+version = "1.0.0"
+id = "artifacts/project-hub"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/project-hub/" ]
+localPort = 18869
+
+[services.development]
+run = "pnpm --filter @workspace/project-hub run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/project-hub", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/project-hub/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18869"
+BASE_PATH = "/project-hub/"

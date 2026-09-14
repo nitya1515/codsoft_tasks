@@ -181,3 +181,385 @@ export const CreateCheckoutSessionResponse = zod.object({
 })
 
 
+/**
+ * @summary List projects
+ */
+export const ListProjectsQueryParams = zod.object({
+  "status": zod.enum(['active', 'planning', 'completed', 'archived']).optional(),
+  "search": zod.coerce.string().optional()
+})
+
+export const listProjectsResponseProgressMin = 0;
+export const listProjectsResponseProgressMax = 100;
+
+
+
+export const ListProjectsResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['active', 'planning', 'completed', 'archived']),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "startDate": zod.string(),
+  "dueDate": zod.string().nullable(),
+  "progress": zod.number().int().min(listProjectsResponseProgressMin).max(listProjectsResponseProgressMax),
+  "taskCount": zod.number().int(),
+  "completedTaskCount": zod.number().int(),
+  "memberIds": zod.array(zod.string()),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListProjectsResponse = zod.array(ListProjectsResponseItem)
+
+
+/**
+ * @summary Create a project
+ */
+
+
+
+export const CreateProjectBody = zod.object({
+  "name": zod.string().min(1),
+  "description": zod.string(),
+  "status": zod.enum(['active', 'planning', 'completed', 'archived']),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "startDate": zod.string(),
+  "dueDate": zod.string().nullish(),
+  "memberIds": zod.array(zod.string()).optional()
+})
+
+export const createProjectResponseProgressMin = 0;
+export const createProjectResponseProgressMax = 100;
+
+
+
+export const CreateProjectResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['active', 'planning', 'completed', 'archived']),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "startDate": zod.string(),
+  "dueDate": zod.string().nullable(),
+  "progress": zod.number().int().min(createProjectResponseProgressMin).max(createProjectResponseProgressMax),
+  "taskCount": zod.number().int(),
+  "completedTaskCount": zod.number().int(),
+  "memberIds": zod.array(zod.string()),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Get a project
+ */
+export const GetProjectParams = zod.object({
+  "projectId": zod.coerce.string()
+})
+
+export const getProjectResponseProgressMin = 0;
+export const getProjectResponseProgressMax = 100;
+
+
+
+export const GetProjectResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['active', 'planning', 'completed', 'archived']),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "startDate": zod.string(),
+  "dueDate": zod.string().nullable(),
+  "progress": zod.number().int().min(getProjectResponseProgressMin).max(getProjectResponseProgressMax),
+  "taskCount": zod.number().int(),
+  "completedTaskCount": zod.number().int(),
+  "memberIds": zod.array(zod.string()),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update a project
+ */
+export const UpdateProjectParams = zod.object({
+  "projectId": zod.coerce.string()
+})
+
+
+
+
+export const UpdateProjectBody = zod.object({
+  "name": zod.string().min(1).optional(),
+  "description": zod.string().optional(),
+  "status": zod.enum(['active', 'planning', 'completed', 'archived']).optional(),
+  "priority": zod.enum(['low', 'medium', 'high']).optional(),
+  "startDate": zod.string().optional(),
+  "dueDate": zod.string().nullish(),
+  "memberIds": zod.array(zod.string()).optional()
+})
+
+export const updateProjectResponseProgressMin = 0;
+export const updateProjectResponseProgressMax = 100;
+
+
+
+export const UpdateProjectResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['active', 'planning', 'completed', 'archived']),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "startDate": zod.string(),
+  "dueDate": zod.string().nullable(),
+  "progress": zod.number().int().min(updateProjectResponseProgressMin).max(updateProjectResponseProgressMax),
+  "taskCount": zod.number().int(),
+  "completedTaskCount": zod.number().int(),
+  "memberIds": zod.array(zod.string()),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a project
+ */
+export const DeleteProjectParams = zod.object({
+  "projectId": zod.coerce.string()
+})
+
+export const DeleteProjectResponse = zod.void()
+
+
+/**
+ * @summary List tasks
+ */
+export const ListTasksQueryParams = zod.object({
+  "projectId": zod.coerce.string().optional(),
+  "status": zod.enum(['backlog', 'todo', 'in_progress', 'review', 'done']).optional(),
+  "assigneeId": zod.coerce.string().optional()
+})
+
+export const listTasksResponseProgressMin = 0;
+export const listTasksResponseProgressMax = 100;
+
+
+
+export const ListTasksResponseItem = zod.object({
+  "id": zod.string(),
+  "projectId": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['backlog', 'todo', 'in_progress', 'review', 'done']),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "assigneeId": zod.string().nullable(),
+  "assignee": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "initials": zod.string(),
+  "color": zod.string()
+}).nullable(),
+  "deadline": zod.string().nullable(),
+  "progress": zod.number().int().min(listTasksResponseProgressMin).max(listTasksResponseProgressMax),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListTasksResponse = zod.array(ListTasksResponseItem)
+
+
+/**
+ * @summary Create a task
+ */
+
+export const createTaskBodyProgressMin = 0;
+export const createTaskBodyProgressMax = 100;
+
+
+
+export const CreateTaskBody = zod.object({
+  "projectId": zod.string(),
+  "title": zod.string().min(1),
+  "description": zod.string(),
+  "status": zod.enum(['backlog', 'todo', 'in_progress', 'review', 'done']),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "assigneeId": zod.string().nullish(),
+  "deadline": zod.string().nullish(),
+  "progress": zod.number().int().min(createTaskBodyProgressMin).max(createTaskBodyProgressMax).optional()
+})
+
+export const createTaskResponseProgressMin = 0;
+export const createTaskResponseProgressMax = 100;
+
+
+
+export const CreateTaskResponse = zod.object({
+  "id": zod.string(),
+  "projectId": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['backlog', 'todo', 'in_progress', 'review', 'done']),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "assigneeId": zod.string().nullable(),
+  "assignee": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "initials": zod.string(),
+  "color": zod.string()
+}).nullable(),
+  "deadline": zod.string().nullable(),
+  "progress": zod.number().int().min(createTaskResponseProgressMin).max(createTaskResponseProgressMax),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Get a task
+ */
+export const GetTaskParams = zod.object({
+  "taskId": zod.coerce.string()
+})
+
+export const getTaskResponseProgressMin = 0;
+export const getTaskResponseProgressMax = 100;
+
+
+
+export const GetTaskResponse = zod.object({
+  "id": zod.string(),
+  "projectId": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['backlog', 'todo', 'in_progress', 'review', 'done']),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "assigneeId": zod.string().nullable(),
+  "assignee": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "initials": zod.string(),
+  "color": zod.string()
+}).nullable(),
+  "deadline": zod.string().nullable(),
+  "progress": zod.number().int().min(getTaskResponseProgressMin).max(getTaskResponseProgressMax),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update a task
+ */
+export const UpdateTaskParams = zod.object({
+  "taskId": zod.coerce.string()
+})
+
+
+export const updateTaskBodyProgressMin = 0;
+export const updateTaskBodyProgressMax = 100;
+
+
+
+export const UpdateTaskBody = zod.object({
+  "projectId": zod.string().optional(),
+  "title": zod.string().min(1).optional(),
+  "description": zod.string().optional(),
+  "status": zod.enum(['backlog', 'todo', 'in_progress', 'review', 'done']).optional(),
+  "priority": zod.enum(['low', 'medium', 'high']).optional(),
+  "assigneeId": zod.string().nullish(),
+  "deadline": zod.string().nullish(),
+  "progress": zod.number().int().min(updateTaskBodyProgressMin).max(updateTaskBodyProgressMax).optional()
+})
+
+export const updateTaskResponseProgressMin = 0;
+export const updateTaskResponseProgressMax = 100;
+
+
+
+export const UpdateTaskResponse = zod.object({
+  "id": zod.string(),
+  "projectId": zod.string(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "status": zod.enum(['backlog', 'todo', 'in_progress', 'review', 'done']),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "assigneeId": zod.string().nullable(),
+  "assignee": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "initials": zod.string(),
+  "color": zod.string()
+}).nullable(),
+  "deadline": zod.string().nullable(),
+  "progress": zod.number().int().min(updateTaskResponseProgressMin).max(updateTaskResponseProgressMax),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a task
+ */
+export const DeleteTaskParams = zod.object({
+  "taskId": zod.coerce.string()
+})
+
+export const DeleteTaskResponse = zod.void()
+
+
+/**
+ * @summary List available assignees
+ */
+export const ListMembersResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "initials": zod.string(),
+  "color": zod.string()
+})
+export const ListMembersResponse = zod.array(ListMembersResponseItem)
+
+
+/**
+ * @summary Get dashboard summary
+ */
+export const GetDashboardSummaryResponse = zod.object({
+  "projectCount": zod.number().int(),
+  "activeProjectCount": zod.number().int(),
+  "taskCount": zod.number().int(),
+  "completedTaskCount": zod.number().int(),
+  "overdueTaskCount": zod.number().int(),
+  "dueThisWeekCount": zod.number().int(),
+  "progress": zod.number().int(),
+  "statusBreakdown": zod.record(zod.string(), zod.number().int())
+})
+
+
+/**
+ * @summary List recent project activity
+ */
+export const listActivityQueryLimitDefault = 12;
+export const listActivityQueryLimitMax = 50;
+
+
+
+export const ListActivityQueryParams = zod.object({
+  "limit": zod.coerce.number().int().min(1).max(listActivityQueryLimitMax).default(listActivityQueryLimitDefault)
+})
+
+export const ListActivityResponseItem = zod.object({
+  "id": zod.string(),
+  "kind": zod.enum(['project_created', 'project_updated', 'task_created', 'task_updated', 'task_completed']),
+  "message": zod.string(),
+  "projectId": zod.string(),
+  "projectName": zod.string(),
+  "taskId": zod.string().nullable(),
+  "taskTitle": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+export const ListActivityResponse = zod.array(ListActivityResponseItem)
+
+

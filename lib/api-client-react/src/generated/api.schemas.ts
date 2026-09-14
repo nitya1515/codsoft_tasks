@@ -87,6 +87,270 @@ export interface CheckoutSession {
   checkoutUrl: string | null;
 }
 
+export type ProjectStatus = typeof ProjectStatus[keyof typeof ProjectStatus];
+
+
+export const ProjectStatus = {
+  active: 'active',
+  planning: 'planning',
+  completed: 'completed',
+  archived: 'archived',
+} as const;
+
+export type ProjectPriority = typeof ProjectPriority[keyof typeof ProjectPriority];
+
+
+export const ProjectPriority = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+} as const;
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  status: ProjectStatus;
+  priority: ProjectPriority;
+  startDate: string;
+  /** @nullable */
+  dueDate: string | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  progress: number;
+  taskCount: number;
+  completedTaskCount: number;
+  memberIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ProjectInputStatus = typeof ProjectInputStatus[keyof typeof ProjectInputStatus];
+
+
+export const ProjectInputStatus = {
+  active: 'active',
+  planning: 'planning',
+  completed: 'completed',
+  archived: 'archived',
+} as const;
+
+export type ProjectInputPriority = typeof ProjectInputPriority[keyof typeof ProjectInputPriority];
+
+
+export const ProjectInputPriority = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+} as const;
+
+export interface ProjectInput {
+  /** @minLength 1 */
+  name: string;
+  description: string;
+  status: ProjectInputStatus;
+  priority: ProjectInputPriority;
+  startDate: string;
+  /** @nullable */
+  dueDate?: string | null;
+  memberIds?: string[];
+}
+
+export type ProjectUpdateStatus = typeof ProjectUpdateStatus[keyof typeof ProjectUpdateStatus];
+
+
+export const ProjectUpdateStatus = {
+  active: 'active',
+  planning: 'planning',
+  completed: 'completed',
+  archived: 'archived',
+} as const;
+
+export type ProjectUpdatePriority = typeof ProjectUpdatePriority[keyof typeof ProjectUpdatePriority];
+
+
+export const ProjectUpdatePriority = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+} as const;
+
+export interface ProjectUpdate {
+  /** @minLength 1 */
+  name?: string;
+  description?: string;
+  status?: ProjectUpdateStatus;
+  priority?: ProjectUpdatePriority;
+  startDate?: string;
+  /** @nullable */
+  dueDate?: string | null;
+  memberIds?: string[];
+}
+
+export type TaskStatus = typeof TaskStatus[keyof typeof TaskStatus];
+
+
+export const TaskStatus = {
+  backlog: 'backlog',
+  todo: 'todo',
+  in_progress: 'in_progress',
+  review: 'review',
+  done: 'done',
+} as const;
+
+export type TaskPriority = typeof TaskPriority[keyof typeof TaskPriority];
+
+
+export const TaskPriority = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+} as const;
+
+export interface Member {
+  id: string;
+  name: string;
+  email: string;
+  initials: string;
+  color: string;
+}
+
+export interface Task {
+  id: string;
+  projectId: string;
+  title: string;
+  description: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  /** @nullable */
+  assigneeId: string | null;
+  assignee: Member | null;
+  /** @nullable */
+  deadline: string | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  progress: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type TaskInputStatus = typeof TaskInputStatus[keyof typeof TaskInputStatus];
+
+
+export const TaskInputStatus = {
+  backlog: 'backlog',
+  todo: 'todo',
+  in_progress: 'in_progress',
+  review: 'review',
+  done: 'done',
+} as const;
+
+export type TaskInputPriority = typeof TaskInputPriority[keyof typeof TaskInputPriority];
+
+
+export const TaskInputPriority = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+} as const;
+
+export interface TaskInput {
+  projectId: string;
+  /** @minLength 1 */
+  title: string;
+  description: string;
+  status: TaskInputStatus;
+  priority: TaskInputPriority;
+  /** @nullable */
+  assigneeId?: string | null;
+  /** @nullable */
+  deadline?: string | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  progress?: number;
+}
+
+export type TaskUpdateStatus = typeof TaskUpdateStatus[keyof typeof TaskUpdateStatus];
+
+
+export const TaskUpdateStatus = {
+  backlog: 'backlog',
+  todo: 'todo',
+  in_progress: 'in_progress',
+  review: 'review',
+  done: 'done',
+} as const;
+
+export type TaskUpdatePriority = typeof TaskUpdatePriority[keyof typeof TaskUpdatePriority];
+
+
+export const TaskUpdatePriority = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+} as const;
+
+export interface TaskUpdate {
+  projectId?: string;
+  /** @minLength 1 */
+  title?: string;
+  description?: string;
+  status?: TaskUpdateStatus;
+  priority?: TaskUpdatePriority;
+  /** @nullable */
+  assigneeId?: string | null;
+  /** @nullable */
+  deadline?: string | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  progress?: number;
+}
+
+export type DashboardSummaryStatusBreakdown = {[key: string]: number};
+
+export interface DashboardSummary {
+  projectCount: number;
+  activeProjectCount: number;
+  taskCount: number;
+  completedTaskCount: number;
+  overdueTaskCount: number;
+  dueThisWeekCount: number;
+  progress: number;
+  statusBreakdown: DashboardSummaryStatusBreakdown;
+}
+
+export type ActivityKind = typeof ActivityKind[keyof typeof ActivityKind];
+
+
+export const ActivityKind = {
+  project_created: 'project_created',
+  project_updated: 'project_updated',
+  task_created: 'task_created',
+  task_updated: 'task_updated',
+  task_completed: 'task_completed',
+} as const;
+
+export interface Activity {
+  id: string;
+  kind: ActivityKind;
+  message: string;
+  projectId: string;
+  projectName: string;
+  /** @nullable */
+  taskId: string | null;
+  /** @nullable */
+  taskTitle: string | null;
+  createdAt: string;
+}
+
 export type ListProductsParams = {
 search?: string;
 category?: string;
@@ -108,4 +372,44 @@ export const ListProductsSort = {
   'price-asc': 'price-asc',
   'price-desc': 'price-desc',
 } as const;
+
+export type ListProjectsParams = {
+status?: ListProjectsStatus;
+search?: string;
+};
+
+export type ListProjectsStatus = typeof ListProjectsStatus[keyof typeof ListProjectsStatus];
+
+
+export const ListProjectsStatus = {
+  active: 'active',
+  planning: 'planning',
+  completed: 'completed',
+  archived: 'archived',
+} as const;
+
+export type ListTasksParams = {
+projectId?: string;
+status?: ListTasksStatus;
+assigneeId?: string;
+};
+
+export type ListTasksStatus = typeof ListTasksStatus[keyof typeof ListTasksStatus];
+
+
+export const ListTasksStatus = {
+  backlog: 'backlog',
+  todo: 'todo',
+  in_progress: 'in_progress',
+  review: 'review',
+  done: 'done',
+} as const;
+
+export type ListActivityParams = {
+/**
+ * @minimum 1
+ * @maximum 50
+ */
+limit?: number;
+};
 
